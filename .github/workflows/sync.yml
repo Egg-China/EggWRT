@@ -1,0 +1,28 @@
+name: Sync with Upstream
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天00:00运行
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout target repository
+      uses: actions/checkout@v2
+      with:
+        ref: master  # 目标仓库使用master分支
+
+    - name: Add upstream remote
+      run: git remote add upstream https://github.com/coolsnowwolf/lede.git  # 上游仓库地址
+
+    - name: Fetch upstream changes
+      run: git fetch upstream
+
+    - name: Merge upstream changes
+      run: git merge upstream/master  # 上游仓库的master分支
+
+    - name: Push changes
+      run: git push origin master  # 将更改推送到目标仓库的master分支
