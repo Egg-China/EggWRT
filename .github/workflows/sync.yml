@@ -27,7 +27,13 @@ jobs:
       run: git fetch upstream
 
     - name: Merge upstream changes
-      run: git merge upstream/master --allow-unrelated-histories  # 强制合并不相关的历史记录
+      run: git merge upstream/master --allow-unrelated-histories || echo "Merge failed, attempting to resolve conflicts"  # 合并失败时显示错误信息
+
+    - name: Resolve merge conflicts (Auto resolve)
+      run: |
+        git checkout --theirs package/base-files/files/bin/config_generate  # 选择上游的更改（如果是“ours”，则选择当前仓库的更改）
+        git add package/base-files/files/bin/config_generate  # 标记为已解决
+        git commit -m "Resolved merge conflict in config_generate"
 
     - name: Push changes
       run: git push origin master  # 将更改推送到目标仓库的master分支
