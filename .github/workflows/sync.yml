@@ -35,5 +35,9 @@ jobs:
         git add package/base-files/files/bin/config_generate  # 标记为已解决
         git commit -m "Resolved merge conflict in config_generate"
 
-    - name: Push changes
-      run: git push origin master  # 将更改推送到目标仓库的master分支
+    - name: Push changes using Fine-grained PAT
+      env:
+        FINE_GRAINED_TOKEN: ${{ secrets.FINE_GRAINED_TOKEN }}  # 使用Fine-grained PAT
+      run: |
+        git remote set-url origin https://x-access-token:${{ secrets.FINE_GRAINED_TOKEN }}@github.com/Egg-China/EggWRT.git
+        git push origin master  # 将更改推送到目标仓库的master分支
